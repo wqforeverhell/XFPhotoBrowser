@@ -14,6 +14,12 @@
 #import "XFTakePhotoCollectionViewCell.h"
 #import "XFAssetsModel.h"
 #import "UIView+SDAutoLayout.h"
+#import "XFHUD.h"
+#import "XFAssetsLibraryModel.h"
+#import "XFAssetsLibraryData.h"
+#import "XFAssetsLibraryAccessFailureView.h"
+#import "XFPhotoAlbumViewController.h"
+#import "XFPushAnimation.h"
 
 static NSString *firstItemIdentifier = @"XFTakePhotoCollectionViewCell";
 static NSString *aidentifier = @"XFAssetsCollectionViewCell";
@@ -21,28 +27,40 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
 @interface XFAssetsPhotoViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIView *bottomView;
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 
 @property (strong, nonatomic) XFSelectedAssetsView *selectedAssetsView;
 
+@property (strong, nonatomic) NSMutableArray *groupArray;
 @property (strong, nonatomic) NSMutableArray *dataArray;
 @property (strong, nonatomic) NSMutableArray *selectedArray;
 @end
 
 @implementation XFAssetsPhotoViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:YES];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:YES];
+    
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.navigationItem.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStyleBordered target:self action:@selector(didCancelBarButtionAction)];
     
     [self.collectionView registerNib:[UINib nibWithNibName:firstItemIdentifier bundle:nil] forCellWithReuseIdentifier:firstItemIdentifier];
     [self.collectionView registerNib:[UINib nibWithNibName:aidentifier bundle:nil] forCellWithReuseIdentifier:aidentifier];
     
     self.selectedAssetsView = [XFSelectedAssetsView makeView];
+    self.selectedAssetsView.maxPhotosNumber = self.maxPhotosNumber;
     XFWeakSelf;
     self.selectedAssetsView.deleteAssetsBlock = ^(XFAssetsModel *model) {
+        [wself.selectedArray removeObject:model];
         for ( XFAssetsModel *dmodel in wself.dataArray ) {
             if ( [dmodel.asset isEqual:model.asset] ) {
                 dmodel.selected = NO;
@@ -51,41 +69,55 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
         }
         [wself.collectionView reloadData];
     };
+    self.selectedAssetsView.confirmBlock = ^() {
+        if ( wself.callback ) {
+            wself.callback([wself.selectedArray copy]);
+            [wself dismissViewControllerAnimated:YES completion:nil];
+        }
+    };
     [self.bottomView addSubview:self.selectedAssetsView];
     self.selectedAssetsView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
-    [self setupAssets];
+    [self setupData];
 }
 
-- (void)didCancelBarButtionAction {
-    [self.parentViewController dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+- (IBAction)didCancelButtionAction:(UIButton *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)didBackButtonAction:(UIButton *)sender {
+    XFPhotoAlbumViewController *photoAlbumViewController = [XFPhotoAlbumViewController new];
+    photoAlbumViewController.groupArray = [self.groupArray copy];
+    [self.navigationController pushViewController:photoAlbumViewController animated:NO];
+    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:0] forKey:nil];
+}
+
+- (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup {
+    _assetsGroup = assetsGroup;
+    XFWeakSelf;
+    [XFAssetsLibraryData getAssetsWithGroup:assetsGroup successBlock:^(NSArray *array) {
+        [wself.dataArray removeAllObjects];
+        [wself.dataArray addObjectsFromArray:array];
+        [XFHUD dismiss];
+        [wself.collectionView reloadData];
     }];
 }
 
-- (void)setupAssets {
-    [self.dataArray removeAllObjects];
+- (void)setupData {
     XFWeakSelf;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        ALAssetsGroupEnumerationResultsBlock resultsBlock = ^(ALAsset *asset, NSUInteger index, BOOL *stop) {
-            if ( asset ) {
-                if ( [[asset valueForProperty:ALAssetPropertyType] isEqual:ALAssetTypePhoto] ) {
-                    XFAssetsModel *model = [XFAssetsModel getModelWithData:asset];
-                    [wself.dataArray addObject:model];
-                }
-            }else{
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [wself.collectionView reloadData];
-                });
-            }
-        };
-        //    //指定操作方式的，遍历。操作方式有：
-        //    //NSEnumerationConcurrent：同步的方式遍历
-        //    //NSEnumerationReverse：倒序的方式遍历
-//        [wself.assetsGroup enumerateAssetsUsingBlock:resultsBlock];   //最简单的遍历,按默认排序
-        [wself.assetsGroup enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:resultsBlock];
-    });
-    
+    [XFAssetsLibraryData getLibraryGroupWithSuccess:^(NSArray *array) {
+        [wself.groupArray addObjectsFromArray:array];
+        wself.titleLabel.text = [[wself.groupArray.firstObject group] valueForProperty:ALAssetsGroupPropertyName];
+        [XFAssetsLibraryData getAssetsWithGroup:[wself.groupArray.firstObject group] successBlock:^(NSArray *array) {
+            [wself.dataArray addObjectsFromArray:array];
+            [XFHUD dismiss];
+            [wself.collectionView reloadData];
+        }];
+    } failBlcok:^(NSError *error) {
+        XFAssetsLibraryAccessFailureView *view = [XFAssetsLibraryAccessFailureView makeView];
+        [wself.view addSubview:view];
+        view.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
+    }];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -112,15 +144,38 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     if ( 0 == indexPath.item ) {
         
     }else {
-        XFAssetsModel *model = self.dataArray[indexPath.item - 1];
-        if ( model.selected ) {
-            [self.selectedAssetsView deleteModelWithModel:model];
+        if ( self.maxPhotosNumber == 0 ) {
+            [self changeDataWithIndexPath:indexPath];
         }else {
-            [self.selectedAssetsView addModelWithModel:model];
+            XFAssetsModel *model = self.dataArray[indexPath.item - 1];
+            if ( model.selected ) {
+                [self changeDataWithIndexPath:indexPath];
+            }else {
+                if ( self.selectedArray.count < self.maxPhotosNumber ) {
+                    [self changeDataWithIndexPath:indexPath];
+                }else {
+                    [XFHUD overMaxNumberWithNumber:self.maxPhotosNumber];
+                }
+            }
         }
-        model.selected = !model.selected;
-        [self.collectionView reloadData];
     }
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(-20.f, 0.f, 0.f, 0.f);
+}
+
+- (void)changeDataWithIndexPath:(NSIndexPath *)indexPath {
+    XFAssetsModel *model = self.dataArray[indexPath.item - 1];
+    if ( model.selected ) {
+        [self.selectedArray removeObject:model];
+        [self.selectedAssetsView deleteModelWithModel:model];
+    }else {
+        [self.selectedArray addObject:model];
+        [self.selectedAssetsView addModelWithModel:model];
+    }
+    model.selected = !model.selected;
+    [self.collectionView reloadData];
 }
 
 - (NSMutableArray *)dataArray {
@@ -137,9 +192,26 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     return _selectedArray;
 }
 
+- (NSMutableArray *)groupArray {
+    if ( !_groupArray ) {
+        _groupArray = [NSMutableArray array];
+    }
+    return _groupArray;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc {
+    [self.dataArray removeAllObjects];
+    self.dataArray = nil;
+    [self.selectedArray removeAllObjects];
+    self.selectedArray = nil;
+    [self.groupArray removeAllObjects];
+    self.groupArray = nil;
+    self.selectedArray = nil;
 }
 
 /*

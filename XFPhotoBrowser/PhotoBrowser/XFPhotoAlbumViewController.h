@@ -10,4 +10,6 @@
 
 @interface XFPhotoAlbumViewController : UIViewController <UITableViewDelegate,UITableViewDataSource>
 
+@property (strong, nonatomic) NSArray *groupArray;
+
 @end

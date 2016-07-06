@@ -13,12 +13,11 @@
 #import "XFPhotoAlbumTableViewCell.h"
 #import "UIView+SDAutoLayout.h"
 #import "XFAssetsPhotoViewController.h"
+#import "SVProgressHUD.h"
 
 static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 
 @interface XFPhotoAlbumViewController ()
-
-@property (nonatomic, strong) ALAssetsLibrary *assetsLibrary;
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -32,65 +31,22 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
     
     self.title = @"相册";
     
-    self.navigationController.navigationBar.barTintColor = [UIColor blackColor];
+    self.navigationController.navigationBar.barTintColor = RGB(48, 48, 48);
     NSDictionary *titleTextAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,[UIFont systemFontOfSize:17.f],NSFontAttributeName,nil];
     self.navigationController.navigationBar.titleTextAttributes = titleTextAttributesDict;
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     
     [self.tableView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellReuseIdentifier:identifier];
     
-    [self setupGroup];
+    [self.dataArray removeAllObjects];
+    [self.dataArray addObjectsFromArray:self.groupArray];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(didCancelBarButtonAction)];
-    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStyleDone target:nil action:nil];
 }
 
 - (void)didCancelBarButtonAction {
-    [self.navigationController dismissViewControllerAnimated:YES completion:^{
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    }];
-}
-
-- (void)setupGroup {
-    
-    [self.dataArray removeAllObjects];
-    
-    ALAssetsFilter *assetsFilter = [ALAssetsFilter allPhotos];
-    XFWeakSelf;
-    ALAssetsLibraryGroupsEnumerationResultsBlock resultsBlock = ^(ALAssetsGroup *group, BOOL *stop) {
-        
-        if ( group ) {
-            [group setAssetsFilter:assetsFilter];
-            XFAssetsLibraryModel *model = [XFAssetsLibraryModel getModelWithData:group];
-            [wself.dataArray addObject:model];
-            if ( wself.dataArray.count == 1 && [[group valueForProperty:ALAssetsGroupPropertyType] integerValue] == 16 ) {
-                XFAssetsPhotoViewController *assetsPhotoViewController = [XFAssetsPhotoViewController new];
-                assetsPhotoViewController.assetsGroup = model.group;
-                [wself.navigationController pushViewController:assetsPhotoViewController animated:NO];
-            }
-        }else {
-            [wself.tableView reloadData];
-        }
-        
-        if ( stop ) {
-            [wself.tableView reloadData];
-        }
-    };
-    
-    ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
-        XFAssetsLibraryAccessFailureView *view = [XFAssetsLibraryAccessFailureView makeView];
-        [self.view addSubview:view];
-        view.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
-    };
-    
-    // Enumerate Camera roll first
-    [self.assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:resultsBlock failureBlock:failureBlock];
-    
-    // Then all other groups
-    NSUInteger type = ALAssetsGroupLibrary | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces | ALAssetsGroupPhotoStream;
-    
-    [self.assetsLibrary enumerateGroupsWithTypes:type usingBlock:resultsBlock failureBlock:failureBlock];
-    
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UITableView
@@ -119,10 +75,8 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     XFAssetsLibraryModel *model = self.dataArray[indexPath.row];
-    
-    XFAssetsPhotoViewController *assetsPhotoViewController = [XFAssetsPhotoViewController new];
-    assetsPhotoViewController.assetsGroup = model.group;
-    [self.navigationController pushViewController:assetsPhotoViewController animated:YES];
+    [[[self.navigationController viewControllers] objectAtIndex:self.navigationController.viewControllers.count - 2] setValue:model.group forKeyPath:@"assetsGroup"];
+    [self.navigationController popViewControllerAnimated:YES];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -145,16 +99,14 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
     return _dataArray;
 }
 
-- (ALAssetsLibrary *)assetsLibrary {
-    if ( !_assetsLibrary ) {
-        _assetsLibrary = [self.class defaultAssetsLibrary];
-    }
-    return _assetsLibrary;
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc {
+    [self.dataArray removeAllObjects];
+    self.dataArray = nil;
 }
 
 /*

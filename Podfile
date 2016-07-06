@@ -7,8 +7,9 @@ inhibit_all_warnings!
 target 'XFPhotoBrowser' do
 
 pod ‘AFNetworking’
-pod ‘MBProgressHUD’
+pod ‘SVProgressHUD’
 pod ‘SDAutoLayout’
+pod ’MLeaksFinder’
 
 end
 

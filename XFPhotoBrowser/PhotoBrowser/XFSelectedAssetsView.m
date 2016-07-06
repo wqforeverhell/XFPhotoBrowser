@@ -15,6 +15,7 @@ static NSString *identifier = @"XFSelectedAssetsCollectionViewCell";
 @interface XFSelectedAssetsView ()
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIButton *confirmButton;
+@property (weak, nonatomic) IBOutlet UILabel *numberLabel;
 
 @property (strong, nonatomic) NSMutableArray *dataArray;
 @end
@@ -27,26 +28,53 @@ static NSString *identifier = @"XFSelectedAssetsCollectionViewCell";
 
 - (void)awakeFromNib {
     [self.collectionView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellWithReuseIdentifier:identifier];
+    self.confirmButton.titleLabel.numberOfLines = 0;
+}
+
+- (void)setMaxPhotosNumber:(NSInteger)maxPhotosNumber {
+    _maxPhotosNumber = maxPhotosNumber;
+    
+    self.numberLabel.text = [NSString stringWithFormat:@"0/%ld",maxPhotosNumber];
+}
+
+- (IBAction)didConfirmButtonAction:(UIButton *)sender {
+    if ( self.confirmBlock ) {
+        self.confirmBlock();
+    }
 }
 
 - (void)addModelWithModel:(XFAssetsModel *)model {
     XFWeakSelf;
     [self.collectionView performBatchUpdates:^{
         [wself.dataArray addObject:model];
-        [wself.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:self.dataArray.count - 1 inSection:0]]];
+        [wself.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0]]];
     } completion:^(BOOL finished) {
         [wself.collectionView reloadData];
+        [wself.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+        [wself setupButtonTitle];
     }];
 }
 
 - (void)deleteModelWithModel:(XFAssetsModel *)model {
     XFWeakSelf;
     [self.collectionView performBatchUpdates:^{
-        [wself.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[self.dataArray indexOfObject:model] inSection:0]]];
+        [wself.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[wself.dataArray indexOfObject:model] inSection:0]]];
         [wself.dataArray removeObject:model];
     } completion:^(BOOL finished) {
         [wself.collectionView reloadData];
+        if ( wself.dataArray.count ) {
+            [wself.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+        }
+        [wself setupButtonTitle];
     }];
+}
+
+- (void)setupButtonTitle {
+    if ( self.maxPhotosNumber != 0 ) {
+        self.numberLabel.text = [NSString stringWithFormat:@"%ld/%ld",self.dataArray.count,self.maxPhotosNumber];
+    }else {
+        self.numberLabel.text = [NSString stringWithFormat:@"%ld",self.dataArray.count];
+    }
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {

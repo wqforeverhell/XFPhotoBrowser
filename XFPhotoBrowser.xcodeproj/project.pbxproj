@@ -20,7 +20,7 @@
 		61043CCD1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61043CCB1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.xib */; };
 		61B1FD621D2B624A00977DC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B1FD611D2B624A00977DC4 /* main.m */; };
 		61B1FD651D2B624A00977DC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B1FD641D2B624A00977DC4 /* AppDelegate.m */; };
-		61B1FD681D2B624A00977DC4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B1FD671D2B624A00977DC4 /* ViewController.m */; };
+		61B1FD681D2B624A00977DC4 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B1FD671D2B624A00977DC4 /* HomeViewController.m */; };
 		61B1FD6B1D2B624A00977DC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 61B1FD691D2B624A00977DC4 /* Main.storyboard */; };
 		61B1FD6D1D2B624A00977DC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 61B1FD6C1D2B624A00977DC4 /* Assets.xcassets */; };
 		61B1FD7A1D2B640D00977DC4 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 61B1FD791D2B640D00977DC4 /* Default-568h@2x.png */; };
@@ -35,6 +35,11 @@
 		61B1FDB91D2B8C1300977DC4 /* XFAssetsLibraryAccessFailureView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61B1FDB81D2B8C1300977DC4 /* XFAssetsLibraryAccessFailureView.xib */; };
 		61B1FDBD1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B1FDBB1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.m */; };
 		61B1FDBE1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61B1FDBC1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.xib */; };
+		61B55C811D2CB15200CDC434 /* XFHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C801D2CB15200CDC434 /* XFHUD.m */; };
+		61B55C851D2CB34300CDC434 /* XFHomeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C831D2CB34300CDC434 /* XFHomeCollectionViewCell.m */; };
+		61B55C861D2CB34300CDC434 /* XFHomeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61B55C841D2CB34300CDC434 /* XFHomeCollectionViewCell.xib */; };
+		61B55C8F1D2CD3B500CDC434 /* XFAssetsLibraryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C8E1D2CD3B500CDC434 /* XFAssetsLibraryData.m */; };
+		61B55C931D2CE41400CDC434 /* XFPushAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C921D2CE41400CDC434 /* XFPushAnimation.m */; };
 		F7FD6ACE36B2D42141CD3F4B /* libPods-XFPhotoBrowser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AD21F4E727F56CCBA24DDE /* libPods-XFPhotoBrowser.a */; };
 /* End PBXBuildFile section */
 
@@ -63,8 +68,8 @@
 		61B1FD611D2B624A00977DC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		61B1FD631D2B624A00977DC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		61B1FD641D2B624A00977DC4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		61B1FD661D2B624A00977DC4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		61B1FD671D2B624A00977DC4 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		61B1FD661D2B624A00977DC4 /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		61B1FD671D2B624A00977DC4 /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		61B1FD6A1D2B624A00977DC4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		61B1FD6C1D2B624A00977DC4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		61B1FD711D2B624A00977DC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -86,6 +91,15 @@
 		61B1FDBA1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFPhotoAlbumTableViewCell.h; sourceTree = "<group>"; };
 		61B1FDBB1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFPhotoAlbumTableViewCell.m; sourceTree = "<group>"; };
 		61B1FDBC1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XFPhotoAlbumTableViewCell.xib; sourceTree = "<group>"; };
+		61B55C7F1D2CB15200CDC434 /* XFHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFHUD.h; sourceTree = "<group>"; };
+		61B55C801D2CB15200CDC434 /* XFHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFHUD.m; sourceTree = "<group>"; };
+		61B55C821D2CB34300CDC434 /* XFHomeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFHomeCollectionViewCell.h; sourceTree = "<group>"; };
+		61B55C831D2CB34300CDC434 /* XFHomeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFHomeCollectionViewCell.m; sourceTree = "<group>"; };
+		61B55C841D2CB34300CDC434 /* XFHomeCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XFHomeCollectionViewCell.xib; sourceTree = "<group>"; };
+		61B55C8D1D2CD3B500CDC434 /* XFAssetsLibraryData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFAssetsLibraryData.h; sourceTree = "<group>"; };
+		61B55C8E1D2CD3B500CDC434 /* XFAssetsLibraryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFAssetsLibraryData.m; sourceTree = "<group>"; };
+		61B55C911D2CE41400CDC434 /* XFPushAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFPushAnimation.h; sourceTree = "<group>"; };
+		61B55C921D2CE41400CDC434 /* XFPushAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFPushAnimation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,11 +142,15 @@
 			children = (
 				61B1FD631D2B624A00977DC4 /* AppDelegate.h */,
 				61B1FD641D2B624A00977DC4 /* AppDelegate.m */,
-				61B1FD661D2B624A00977DC4 /* ViewController.h */,
-				61B1FD671D2B624A00977DC4 /* ViewController.m */,
+				61B1FD661D2B624A00977DC4 /* HomeViewController.h */,
+				61B1FD671D2B624A00977DC4 /* HomeViewController.m */,
+				61B55C821D2CB34300CDC434 /* XFHomeCollectionViewCell.h */,
+				61B55C831D2CB34300CDC434 /* XFHomeCollectionViewCell.m */,
+				61B55C841D2CB34300CDC434 /* XFHomeCollectionViewCell.xib */,
 				61B1FD691D2B624A00977DC4 /* Main.storyboard */,
 				61B1FD6C1D2B624A00977DC4 /* Assets.xcassets */,
 				61B1FD7B1D2B667400977DC4 /* PhotoBrowser */,
+				61B55C7E1D2CB13B00CDC434 /* Other */,
 				61B1FD601D2B624A00977DC4 /* Supporting Files */,
 			);
 			path = XFPhotoBrowser;
@@ -209,6 +227,19 @@
 				61043CCB1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.xib */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		61B55C7E1D2CB13B00CDC434 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				61B55C7F1D2CB15200CDC434 /* XFHUD.h */,
+				61B55C801D2CB15200CDC434 /* XFHUD.m */,
+				61B55C8D1D2CD3B500CDC434 /* XFAssetsLibraryData.h */,
+				61B55C8E1D2CD3B500CDC434 /* XFAssetsLibraryData.m */,
+				61B55C911D2CE41400CDC434 /* XFPushAnimation.h */,
+				61B55C921D2CE41400CDC434 /* XFPushAnimation.m */,
+			);
+			path = Other;
 			sourceTree = "<group>";
 		};
 		70761D33F72D1571E9B67B5B /* Pods */ = {
@@ -288,6 +319,7 @@
 				61043CCD1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.xib in Resources */,
 				61B1FD6B1D2B624A00977DC4 /* Main.storyboard in Resources */,
 				61B1FD7A1D2B640D00977DC4 /* Default-568h@2x.png in Resources */,
+				61B55C861D2CB34300CDC434 /* XFHomeCollectionViewCell.xib in Resources */,
 				61043CC31D2BA1F800695FEC /* XFTakePhotoCollectionViewCell.xib in Resources */,
 				61B1FDB91D2B8C1300977DC4 /* XFAssetsLibraryAccessFailureView.xib in Resources */,
 				61B1FDAA1D2B875E00977DC4 /* XFPhotoAlbumViewController.xib in Resources */,
@@ -350,12 +382,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61B55C8F1D2CD3B500CDC434 /* XFAssetsLibraryData.m in Sources */,
 				61043CBA1D2B9F1A00695FEC /* XFAssetsCollectionViewCell.m in Sources */,
 				61B1FDAE1D2B8B2800977DC4 /* XFAssetsLibraryModel.m in Sources */,
 				61043CC61D2BA33200695FEC /* XFSelectedAssetsView.m in Sources */,
-				61B1FD681D2B624A00977DC4 /* ViewController.m in Sources */,
+				61B55C931D2CE41400CDC434 /* XFPushAnimation.m in Sources */,
+				61B1FD681D2B624A00977DC4 /* HomeViewController.m in Sources */,
 				61043CCC1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.m in Sources */,
 				61043CB51D2B9B6B00695FEC /* XFAssetsPhotoViewController.m in Sources */,
+				61B55C851D2CB34300CDC434 /* XFHomeCollectionViewCell.m in Sources */,
 				61043CBE1D2BA0AF00695FEC /* XFAssetsModel.m in Sources */,
 				61B1FD651D2B624A00977DC4 /* AppDelegate.m in Sources */,
 				61B1FDB71D2B8C0300977DC4 /* XFAssetsLibraryAccessFailureView.m in Sources */,
@@ -363,6 +398,7 @@
 				61043CC21D2BA1F800695FEC /* XFTakePhotoCollectionViewCell.m in Sources */,
 				61B1FDA91D2B875E00977DC4 /* XFPhotoAlbumViewController.m in Sources */,
 				61B1FDBD1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.m in Sources */,
+				61B55C811D2CB15200CDC434 /* XFHUD.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

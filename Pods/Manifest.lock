@@ -14,17 +14,20 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
-  - MBProgressHUD (0.9.2)
+  - MLeaksFinder (0.1.1)
   - SDAutoLayout (2.1.2)
+  - SVProgressHUD (2.0.3)
 
 DEPENDENCIES:
   - AFNetworking
-  - MBProgressHUD
+  - MLeaksFinder
   - SDAutoLayout
+  - SVProgressHUD
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
-  MBProgressHUD: 1569cf7ace17a8bac47aabfbb8580a49690386d1
+  MLeaksFinder: 25e38f8ca9438354aa4184f65148e671f5d18620
   SDAutoLayout: 4910758003bbb043003700915b00f53fbc2bf512
+  SVProgressHUD: b0830714205bea1317ea1a2ebc71e5633af334d4
 
 COCOAPODS: 0.39.0
