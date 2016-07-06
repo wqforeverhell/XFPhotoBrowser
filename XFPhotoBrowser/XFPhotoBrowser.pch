@@ -1,0 +1,23 @@
+//
+//  XFPhotoBrowser.pch
+//  XFPhotoBrowser
+//
+//  Created by zeroLu on 16/7/5.
+//  Copyright © 2016年 zeroLu. All rights reserved.
+//
+
+#ifndef XFPhotoBrowser_pch
+#define XFPhotoBrowser_pch
+
+#import <UIKit/UIKit.h>
+
+#define RGB(x,y,z) [UIColor colorWithRed:x/255.f green:y/255.f blue:z/255.f alpha:1.f]
+#define RGBA(x,y,z,a) [UIColor colorWithRed:x/255.f green:y/255.f blue:z/255.f alpha:a]
+
+#define loadXibWithName(x) [[[NSBundle mainBundle] loadNibNamed:x owner:self options:nil] firstObject]
+
+#define loadSelfXib loadXibWithName([[self class] description])
+
+#define XFWeakSelf  __weak __typeof(self) wself = self
+
+#endif /* XFPhotoBrowser_pch */
