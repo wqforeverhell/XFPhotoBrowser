@@ -14,6 +14,7 @@
 #import "UIView+SDAutoLayout.h"
 #import "XFAssetsPhotoViewController.h"
 #import "SVProgressHUD.h"
+#import "XFPushAnimation.h"
 
 static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 
@@ -74,9 +75,11 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:2] forKey:@"popAnimation"];
     XFAssetsLibraryModel *model = self.dataArray[indexPath.row];
     [[[self.navigationController viewControllers] objectAtIndex:self.navigationController.viewControllers.count - 2] setValue:model.group forKeyPath:@"assetsGroup"];
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:NO];
+    [self.navigationController.view.layer removeAnimationForKey:@"popAnimation"];
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -107,6 +110,8 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 - (void)dealloc {
     [self.dataArray removeAllObjects];
     self.dataArray = nil;
+    
+    self.tableView = nil;
 }
 
 /*

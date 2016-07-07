@@ -40,8 +40,14 @@
             [resultArray addObject:model];
         }else {
             NSLog(@"停止");
+            NSArray *tempArray = [resultArray copy];
+            for ( XFAssetsLibraryModel *model in tempArray ) {
+                if ( model.groupPropertyType == 16 ) {
+                    [resultArray removeObject:model];
+                    [resultArray insertObject:model atIndex:0];
+                }
+            }
             successBlock(resultArray);
-            [resultArray removeAllObjects]; //这里是为了避免在获取了相机胶卷的分组后的第二次查找数据重复
         }
     };
     
@@ -49,11 +55,8 @@
         failBlock(error);
     };
     
-    //先获取相机胶卷的分组,如果木有要求可以省去这步,一步完成查找
-    [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:resultsBlock failureBlock:failureBlock];
-    
     // Then all other groups
-    NSUInteger type = ALAssetsGroupLibrary | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces | ALAssetsGroupPhotoStream;
+    NSUInteger type = ALAssetsGroupSavedPhotos | ALAssetsGroupLibrary | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces | ALAssetsGroupPhotoStream;
     
     [assetsLibrary enumerateGroupsWithTypes:type usingBlock:resultsBlock failureBlock:failureBlock];
     

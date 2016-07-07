@@ -37,29 +37,53 @@ static NSString *identifier = @"XFSelectedAssetsCollectionViewCell";
     self.numberLabel.text = [NSString stringWithFormat:@"0/%ld",maxPhotosNumber];
 }
 
+- (void)removeData {
+    [self.dataArray removeAllObjects];
+    [self.collectionView reloadData];
+}
+
+#pragma mark - 确定按钮事件
 - (IBAction)didConfirmButtonAction:(UIButton *)sender {
     if ( self.confirmBlock ) {
         self.confirmBlock();
     }
 }
 
-- (void)addModelWithModel:(XFAssetsModel *)model {
+- (void)addModelWithData:(NSArray<XFAssetsModel *> *)data {
     XFWeakSelf;
+    
     [self.collectionView performBatchUpdates:^{
-        [wself.dataArray addObject:model];
-        [wself.collectionView insertItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0]]];
+        NSMutableArray *tempArray = [NSMutableArray array];
+        for ( int i = 0; i < data.count ; i++ ) {
+            [tempArray addObject:[NSIndexPath indexPathForItem:wself.dataArray.count + i inSection:0]];
+        }
+        [wself.dataArray addObjectsFromArray:data];
+        [wself.collectionView insertItemsAtIndexPaths:[tempArray copy]];
     } completion:^(BOOL finished) {
         [wself.collectionView reloadData];
-        [wself.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+        if ( wself.dataArray.count ) {
+            [wself.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:wself.dataArray.count - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+        }
         [wself setupButtonTitle];
     }];
 }
 
-- (void)deleteModelWithModel:(XFAssetsModel *)model {
+- (void)deleteModelWithData:(NSArray<XFAssetsModel *> *)data {
     XFWeakSelf;
     [self.collectionView performBatchUpdates:^{
-        [wself.collectionView deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:[wself.dataArray indexOfObject:model] inSection:0]]];
-        [wself.dataArray removeObject:model];
+        NSMutableArray *tempArray = [NSMutableArray array];
+        NSArray *tempData = [self.dataArray copy];
+        for ( XFAssetsModel *model in data ) {
+            for (int i = 0; i < tempData.count; i++ ) {
+                XFAssetsModel *dmodel = tempData[i];
+                if ( [model.modelID isEqual: dmodel.modelID] ) {
+                    NSLog(@"%d",i);
+                    [tempArray addObject:[NSIndexPath indexPathForItem:i inSection:0]];
+                    [wself.dataArray removeObjectAtIndex:i];
+                }
+            }
+        }
+        [wself.collectionView deleteItemsAtIndexPaths:[tempArray copy]];
     } completion:^(BOOL finished) {
         [wself.collectionView reloadData];
         if ( wself.dataArray.count ) {
@@ -91,7 +115,7 @@ static NSString *identifier = @"XFSelectedAssetsCollectionViewCell";
     cell.model = model;
     XFWeakSelf;
     cell.deleteAssetBlock = ^(XFAssetsModel *deleteModel) {
-        [wself deleteModelWithModel:deleteModel];
+        [wself deleteModelWithData:@[deleteModel]];
         if ( wself.deleteAssetsBlock ) {
             wself.deleteAssetsBlock(deleteModel);
         }
@@ -110,6 +134,11 @@ static NSString *identifier = @"XFSelectedAssetsCollectionViewCell";
         _dataArray = [NSMutableArray array];
     }
     return _dataArray;
+}
+
+- (void)dealloc {
+    [self.dataArray removeAllObjects];
+    self.dataArray = nil;
 }
 
 @end

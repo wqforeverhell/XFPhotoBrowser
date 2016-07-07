@@ -19,5 +19,8 @@ typedef void(^CallBack)(NSArray *selectedArray);
 
 @property (nonatomic, strong) ALAssetsGroup *assetsGroup;
 
+@property (strong, nonatomic) NSArray *selectedAssets;
+
 @property (copy, nonatomic) CallBack callback;
+
 @end

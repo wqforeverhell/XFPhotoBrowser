@@ -56,7 +56,7 @@ static NSString *identifier = @"XFHomeCollectionViewCell";
         label.text = @"+";
         label.textAlignment = NSTextAlignmentCenter;
         [cell.contentView addSubview:label];
-        cell.contentView.backgroundColor = [UIColor lightGrayColor];
+        cell.contentView.backgroundColor = [UIColor whiteColor];
         return cell;
     }else {
         XFHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
@@ -117,6 +117,7 @@ static NSString *identifier = @"XFHomeCollectionViewCell";
         [XFHUD showInOpenLibary];
         XFAssetsPhotoViewController *assetsPhotoViewController = [XFAssetsPhotoViewController new];
 //        assetsPhotoViewController.maxPhotosNumber = 3;
+        assetsPhotoViewController.selectedAssets = [NSArray arrayWithArray:[self.dataArray copy]];
         XFWeakSelf;
         assetsPhotoViewController.callback = ^(NSArray *selectedArray) {
             [wself.dataArray removeAllObjects];

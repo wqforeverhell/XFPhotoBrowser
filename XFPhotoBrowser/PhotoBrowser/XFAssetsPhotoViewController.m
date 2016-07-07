@@ -86,6 +86,9 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
 }
 
 - (IBAction)didBackButtonAction:(UIButton *)sender {
+    [self.selectedArray removeAllObjects];
+    [self.selectedAssetsView removeData];
+    
     XFPhotoAlbumViewController *photoAlbumViewController = [XFPhotoAlbumViewController new];
     photoAlbumViewController.groupArray = [self.groupArray copy];
     [self.navigationController pushViewController:photoAlbumViewController animated:NO];
@@ -109,8 +112,21 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
         [wself.groupArray addObjectsFromArray:array];
         wself.titleLabel.text = [[wself.groupArray.firstObject group] valueForProperty:ALAssetsGroupPropertyName];
         [XFAssetsLibraryData getAssetsWithGroup:[wself.groupArray.firstObject group] successBlock:^(NSArray *array) {
+            [wself.dataArray removeAllObjects];
             [wself.dataArray addObjectsFromArray:array];
             [XFHUD dismiss];
+            
+            for ( XFAssetsModel *smodel in wself.selectedAssets ) {
+                for ( XFAssetsModel *cmodel in wself.dataArray ) {
+                    if ( [smodel.modelID isEqual:cmodel.modelID] ) {
+                        cmodel.selected = YES;
+                    }
+                }
+            }
+            [wself.selectedArray removeAllObjects];
+            [wself.selectedArray addObjectsFromArray:wself.selectedAssets];
+            
+            [wself.selectedAssetsView addModelWithData:wself.selectedAssets];
             [wself.collectionView reloadData];
         }];
     } failBlcok:^(NSError *error) {
@@ -169,10 +185,10 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     XFAssetsModel *model = self.dataArray[indexPath.item - 1];
     if ( model.selected ) {
         [self.selectedArray removeObject:model];
-        [self.selectedAssetsView deleteModelWithModel:model];
+        [self.selectedAssetsView deleteModelWithData:@[model]];
     }else {
         [self.selectedArray addObject:model];
-        [self.selectedAssetsView addModelWithModel:model];
+        [self.selectedAssetsView addModelWithData:@[model]];
     }
     model.selected = !model.selected;
     [self.collectionView reloadData];

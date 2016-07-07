@@ -23,6 +23,10 @@
 
 @interface XFAssetsModel : NSObject
 /**
+ *  用asset的date做唯一标识
+ */
+@property (copy, nonatomic) NSString *modelID;
+/**
  *  原始数据
  */
 @property (strong, nonatomic) ALAsset *asset;

@@ -26,6 +26,8 @@
  */
 @property (strong, nonatomic) NSString *photosNumber;
 
+@property (assign, nonatomic) NSInteger groupPropertyType;
+
 + (XFAssetsLibraryModel *)getModelWithData:(ALAssetsGroup *)data;
 
 @end

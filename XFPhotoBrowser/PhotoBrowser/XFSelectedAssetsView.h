@@ -15,15 +15,17 @@ typedef void(^ConfirmBlock)();
 
 @interface XFSelectedAssetsView : UIView <UICollectionViewDelegate,UICollectionViewDataSource>
 
-- (void)addModelWithModel:(XFAssetsModel *)model;
-
-- (void)deleteModelWithModel:(XFAssetsModel *)model;
-
 @property (assign, nonatomic) NSInteger maxPhotosNumber;
 
 @property (copy, nonatomic) DeleteAssetsBlock deleteAssetsBlock;
 
 @property (copy, nonatomic) ConfirmBlock confirmBlock;
+
+- (void)addModelWithData:(NSArray<XFAssetsModel *> *)data;
+
+- (void)deleteModelWithData:(NSArray<XFAssetsModel *> *)data;
+
+- (void)removeData;
 
 + (instancetype)makeView;
 
