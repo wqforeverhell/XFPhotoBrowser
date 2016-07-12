@@ -25,41 +25,45 @@
 
 + (void)getLibraryGroupWithSuccess:(void (^)(NSArray *array))successBlock failBlcok:(void (^)(NSError *error))failBlock {
     
-    NSMutableArray *resultArray = [NSMutableArray array];
-    
-    ALAssetsLibrary *assetsLibrary = [[self class] defaultAssetsLibrary];
-    
-    ALAssetsFilter *assetsFilter = [ALAssetsFilter allPhotos];
-    
-    ALAssetsLibraryGroupsEnumerationResultsBlock resultsBlock = ^(ALAssetsGroup *group, BOOL *stop) {
+    ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+    if ( author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied ){
+        failBlock(nil);
+    }else {
+        NSMutableArray *resultArray = [NSMutableArray array];
         
-        if ( group ) {
-//            NSLog(@"%@",[group valueForProperty:ALAssetsGroupPropertyName]);
-            [group setAssetsFilter:assetsFilter];
-            XFAssetsLibraryModel *model = [XFAssetsLibraryModel getModelWithData:group];
-            [resultArray addObject:model];
-        }else {
-            NSLog(@"停止");
-            NSArray *tempArray = [resultArray copy];
-            for ( XFAssetsLibraryModel *model in tempArray ) {
-                if ( model.groupPropertyType == 16 ) {
-                    [resultArray removeObject:model];
-                    [resultArray insertObject:model atIndex:0];
+        ALAssetsLibrary *assetsLibrary = [[self class] defaultAssetsLibrary];
+        
+        ALAssetsFilter *assetsFilter = [ALAssetsFilter allPhotos];
+        
+        ALAssetsLibraryGroupsEnumerationResultsBlock resultsBlock = ^(ALAssetsGroup *group, BOOL *stop) {
+            
+            if ( group ) {
+                //            NSLog(@"%@",[group valueForProperty:ALAssetsGroupPropertyName]);
+                [group setAssetsFilter:assetsFilter];
+                XFAssetsLibraryModel *model = [XFAssetsLibraryModel getModelWithData:group];
+                [resultArray addObject:model];
+            }else {
+                NSLog(@"停止");
+                NSArray *tempArray = [resultArray copy];
+                for ( XFAssetsLibraryModel *model in tempArray ) {
+                    if ( model.groupPropertyType == 16 ) {
+                        [resultArray removeObject:model];
+                        [resultArray insertObject:model atIndex:0];
+                    }
                 }
+                successBlock(resultArray);
             }
-            successBlock(resultArray);
-        }
-    };
-    
-    ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
-        failBlock(error);
-    };
-    
-    // Then all other groups
-    NSUInteger type = ALAssetsGroupSavedPhotos | ALAssetsGroupLibrary | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces | ALAssetsGroupPhotoStream;
-    
-    [assetsLibrary enumerateGroupsWithTypes:type usingBlock:resultsBlock failureBlock:failureBlock];
-    
+        };
+        
+        ALAssetsLibraryAccessFailureBlock failureBlock = ^(NSError *error) {
+            failBlock(error);
+        };
+        
+        // Then all other groups
+        NSUInteger type = ALAssetsGroupSavedPhotos | ALAssetsGroupLibrary | ALAssetsGroupAlbum | ALAssetsGroupEvent | ALAssetsGroupFaces | ALAssetsGroupPhotoStream;
+        
+        [assetsLibrary enumerateGroupsWithTypes:type usingBlock:resultsBlock failureBlock:failureBlock];
+    }
 }
 
 + (void)getAssetsWithGroup:(ALAssetsGroup *)group successBlock:(void (^)(NSArray *array))successBlock {

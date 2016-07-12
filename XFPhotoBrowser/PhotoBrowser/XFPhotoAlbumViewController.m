@@ -16,8 +16,6 @@
 #import "SVProgressHUD.h"
 #import "XFPushAnimation.h"
 
-static NSString *identifier = @"XFPhotoAlbumTableViewCell";
-
 @interface XFPhotoAlbumViewController ()
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -36,8 +34,6 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
     NSDictionary *titleTextAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,[UIFont systemFontOfSize:17.f],NSFontAttributeName,nil];
     self.navigationController.navigationBar.titleTextAttributes = titleTextAttributesDict;
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    
-    [self.tableView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellReuseIdentifier:identifier];
     
     [self.dataArray removeAllObjects];
     [self.dataArray addObjectsFromArray:self.groupArray];
@@ -64,7 +60,11 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    XFPhotoAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
+    
+    XFPhotoAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"XFPhotoAlbumTableViewCell"];
+    if ( !cell ) {
+        cell = loadXibWithName(@"XFPhotoAlbumTableViewCell");
+    }
     
     XFAssetsLibraryModel *model = self.dataArray[indexPath.row];
     
@@ -75,11 +75,11 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:2] forKey:@"popAnimation"];
+    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:2] forKey:nil];
     XFAssetsLibraryModel *model = self.dataArray[indexPath.row];
     [[[self.navigationController viewControllers] objectAtIndex:self.navigationController.viewControllers.count - 2] setValue:model.group forKeyPath:@"assetsGroup"];
     [self.navigationController popViewControllerAnimated:NO];
-    [self.navigationController.view.layer removeAnimationForKey:@"popAnimation"];
+    
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -102,16 +102,13 @@ static NSString *identifier = @"XFPhotoAlbumTableViewCell";
     return _dataArray;
 }
 
+- (void)dealloc {
+    [self.navigationController.view.layer removeAllAnimations];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)dealloc {
-    [self.dataArray removeAllObjects];
-    self.dataArray = nil;
-    
-    self.tableView = nil;
 }
 
 /*

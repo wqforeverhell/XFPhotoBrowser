@@ -52,6 +52,7 @@
                 <outlet property="groupNameLabel" destination="WJh-Xv-wxh" id="aMQ-Iy-uVF"/>
                 <outlet property="photoNumberLabel" destination="xsN-GZ-j7j" id="ba6-hX-wGX"/>
             </connections>
+            <point key="canvasLocation" x="251" y="260"/>
         </tableViewCell>
     </objects>
 </document>

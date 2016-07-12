@@ -40,6 +40,9 @@
 		61B55C861D2CB34300CDC434 /* XFHomeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61B55C841D2CB34300CDC434 /* XFHomeCollectionViewCell.xib */; };
 		61B55C8F1D2CD3B500CDC434 /* XFAssetsLibraryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C8E1D2CD3B500CDC434 /* XFAssetsLibraryData.m */; };
 		61B55C931D2CE41400CDC434 /* XFPushAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B55C921D2CE41400CDC434 /* XFPushAnimation.m */; };
+		61EEF70B1D33A260003BC0FB /* XFCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EEF7071D33A260003BC0FB /* XFCameraViewController.m */; };
+		61EEF70C1D33A260003BC0FB /* XFCameraViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 61EEF7081D33A260003BC0FB /* XFCameraViewController.xib */; };
+		61EEF70F1D33A2A3003BC0FB /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EEF70E1D33A2A3003BC0FB /* UIColor+Hex.m */; };
 		F7FD6ACE36B2D42141CD3F4B /* libPods-XFPhotoBrowser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AD21F4E727F56CCBA24DDE /* libPods-XFPhotoBrowser.a */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +103,11 @@
 		61B55C8E1D2CD3B500CDC434 /* XFAssetsLibraryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFAssetsLibraryData.m; sourceTree = "<group>"; };
 		61B55C911D2CE41400CDC434 /* XFPushAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFPushAnimation.h; sourceTree = "<group>"; };
 		61B55C921D2CE41400CDC434 /* XFPushAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFPushAnimation.m; sourceTree = "<group>"; };
+		61EEF7061D33A260003BC0FB /* XFCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XFCameraViewController.h; sourceTree = "<group>"; };
+		61EEF7071D33A260003BC0FB /* XFCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XFCameraViewController.m; sourceTree = "<group>"; };
+		61EEF7081D33A260003BC0FB /* XFCameraViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XFCameraViewController.xib; sourceTree = "<group>"; };
+		61EEF70D1D33A2A3003BC0FB /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		61EEF70E1D33A2A3003BC0FB /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +157,7 @@
 				61B55C841D2CB34300CDC434 /* XFHomeCollectionViewCell.xib */,
 				61B1FD691D2B624A00977DC4 /* Main.storyboard */,
 				61B1FD6C1D2B624A00977DC4 /* Assets.xcassets */,
+				61EEF7041D33A260003BC0FB /* Camera */,
 				61B1FD7B1D2B667400977DC4 /* PhotoBrowser */,
 				61B55C7E1D2CB13B00CDC434 /* Other */,
 				61B1FD601D2B624A00977DC4 /* Supporting Files */,
@@ -232,6 +241,8 @@
 		61B55C7E1D2CB13B00CDC434 /* Other */ = {
 			isa = PBXGroup;
 			children = (
+				61EEF70D1D33A2A3003BC0FB /* UIColor+Hex.h */,
+				61EEF70E1D33A2A3003BC0FB /* UIColor+Hex.m */,
 				61B55C7F1D2CB15200CDC434 /* XFHUD.h */,
 				61B55C801D2CB15200CDC434 /* XFHUD.m */,
 				61B55C8D1D2CD3B500CDC434 /* XFAssetsLibraryData.h */,
@@ -240,6 +251,40 @@
 				61B55C921D2CE41400CDC434 /* XFPushAnimation.m */,
 			);
 			path = Other;
+			sourceTree = "<group>";
+		};
+		61EEF7041D33A260003BC0FB /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				61EEF7051D33A260003BC0FB /* Controller */,
+				61EEF7091D33A260003BC0FB /* Model */,
+				61EEF70A1D33A260003BC0FB /* View */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		61EEF7051D33A260003BC0FB /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				61EEF7061D33A260003BC0FB /* XFCameraViewController.h */,
+				61EEF7071D33A260003BC0FB /* XFCameraViewController.m */,
+				61EEF7081D33A260003BC0FB /* XFCameraViewController.xib */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		61EEF7091D33A260003BC0FB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		61EEF70A1D33A260003BC0FB /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		70761D33F72D1571E9B67B5B /* Pods */ = {
@@ -315,6 +360,7 @@
 				61043CC81D2BA33B00695FEC /* XFSelectedAssetsView.xib in Resources */,
 				61B1FDBE1D2B930300977DC4 /* XFPhotoAlbumTableViewCell.xib in Resources */,
 				61043CB61D2B9B6B00695FEC /* XFAssetsPhotoViewController.xib in Resources */,
+				61EEF70C1D33A260003BC0FB /* XFCameraViewController.xib in Resources */,
 				61B1FD6D1D2B624A00977DC4 /* Assets.xcassets in Resources */,
 				61043CCD1D2BA6FD00695FEC /* XFSelectedAssetsCollectionViewCell.xib in Resources */,
 				61B1FD6B1D2B624A00977DC4 /* Main.storyboard in Resources */,
@@ -383,6 +429,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				61B55C8F1D2CD3B500CDC434 /* XFAssetsLibraryData.m in Sources */,
+				61EEF70F1D33A2A3003BC0FB /* UIColor+Hex.m in Sources */,
+				61EEF70B1D33A260003BC0FB /* XFCameraViewController.m in Sources */,
 				61043CBA1D2B9F1A00695FEC /* XFAssetsCollectionViewCell.m in Sources */,
 				61B1FDAE1D2B8B2800977DC4 /* XFAssetsLibraryModel.m in Sources */,
 				61043CC61D2BA33200695FEC /* XFSelectedAssetsView.m in Sources */,

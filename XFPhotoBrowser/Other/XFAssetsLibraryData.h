@@ -12,7 +12,8 @@
 
 @interface XFAssetsLibraryData : NSObject
 
-+ (void)getLibraryGroupWithSuccess:(void (^)(NSArray *array))successBlock failBlcok:(void (^)(NSError *error))failBlock;
++ (void)getLibraryGroupWithSuccess:(void (^)(NSArray *array))successBlock
+                         failBlcok:(void (^)(NSError *error))failBlock;
 
 + (void)getAssetsWithGroup:(ALAssetsGroup *)group successBlock:(void (^)(NSArray *array))successBlock;
 

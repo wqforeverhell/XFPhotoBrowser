@@ -20,6 +20,7 @@
 #import "XFAssetsLibraryAccessFailureView.h"
 #import "XFPhotoAlbumViewController.h"
 #import "XFPushAnimation.h"
+#import "XFCameraViewController.h"
 
 static NSString *firstItemIdentifier = @"XFTakePhotoCollectionViewCell";
 static NSString *aidentifier = @"XFAssetsCollectionViewCell";
@@ -62,7 +63,7 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     self.selectedAssetsView.deleteAssetsBlock = ^(XFAssetsModel *model) {
         [wself.selectedArray removeObject:model];
         for ( XFAssetsModel *dmodel in wself.dataArray ) {
-            if ( [dmodel.asset isEqual:model.asset] ) {
+            if ( [dmodel.modelID isEqual:model.modelID] ) {
                 dmodel.selected = NO;
                 break;
             }
@@ -79,6 +80,10 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     self.selectedAssetsView.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
     
     [self setupData];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(assetsLibraryChange) name:ALAssetsLibraryChangedNotification object:nil];
+    
+    
 }
 
 - (IBAction)didCancelButtionAction:(UIButton *)sender {
@@ -92,7 +97,8 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     XFPhotoAlbumViewController *photoAlbumViewController = [XFPhotoAlbumViewController new];
     photoAlbumViewController.groupArray = [self.groupArray copy];
     [self.navigationController pushViewController:photoAlbumViewController animated:NO];
-    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:0] forKey:nil];
+    [self.navigationController.view.layer addAnimation:[XFPushAnimation getAnimation:4 direction:0] forKey:@"pushAnimation"];
+    
 }
 
 - (void)setAssetsGroup:(ALAssetsGroup *)assetsGroup {
@@ -106,8 +112,52 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
     }];
 }
 
+- (void)assetsLibraryChange {
+    NSLog(@"通知方法");
+    
+    XFWeakSelf;
+    [self.groupArray removeAllObjects];
+    
+    [XFAssetsLibraryData getLibraryGroupWithSuccess:^(NSArray *array) {
+        [wself.groupArray addObjectsFromArray:array];
+        wself.titleLabel.text = [[wself.groupArray.firstObject group] valueForProperty:ALAssetsGroupPropertyName];
+        [XFAssetsLibraryData getAssetsWithGroup:[wself.groupArray.firstObject group] successBlock:^(NSArray *array) {
+            
+            [wself.dataArray removeAllObjects];
+            [wself.dataArray addObjectsFromArray:array];
+            [XFHUD dismiss];
+            
+            NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[wself.selectedArray copy]];
+            for ( XFAssetsModel *smodel in wself.selectedArray ) {
+                for ( XFAssetsModel *cmodel in wself.dataArray ) {
+                    if ( [smodel.modelID isEqual:cmodel.modelID] ) {
+                        cmodel.selected = YES;
+                        smodel.selected = YES;
+                    }
+                }
+                if ( !smodel.selected ) {
+                    [tempArray removeObject:smodel];
+                }
+            }
+            if ( tempArray.count != wself.selectedArray.count ) {
+                [wself.selectedArray removeAllObjects];
+                [wself.selectedArray addObjectsFromArray:tempArray];
+            }
+            [wself.collectionView reloadData];
+        }];
+    } failBlcok:^(NSError *error) {
+        [XFHUD dismiss];
+        XFAssetsLibraryAccessFailureView *view = [XFAssetsLibraryAccessFailureView makeView];
+        [wself.view addSubview:view];
+        view.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
+    }];
+}
+
+#pragma mark - 初始化数据
 - (void)setupData {
     XFWeakSelf;
+    
+    [self.groupArray removeAllObjects];
     [XFAssetsLibraryData getLibraryGroupWithSuccess:^(NSArray *array) {
         [wself.groupArray addObjectsFromArray:array];
         wself.titleLabel.text = [[wself.groupArray.firstObject group] valueForProperty:ALAssetsGroupPropertyName];
@@ -116,20 +166,27 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
             [wself.dataArray addObjectsFromArray:array];
             [XFHUD dismiss];
             
-            for ( XFAssetsModel *smodel in wself.selectedAssets ) {
-                for ( XFAssetsModel *cmodel in wself.dataArray ) {
-                    if ( [smodel.modelID isEqual:cmodel.modelID] ) {
-                        cmodel.selected = YES;
+            if ( wself.selectedAssets ) {
+                for ( XFAssetsModel *smodel in wself.selectedAssets ) {
+                    for ( XFAssetsModel *cmodel in wself.dataArray ) {
+                        if ( [smodel.modelID isEqual:cmodel.modelID] ) {
+                            cmodel.selected = YES;
+                        }
                     }
                 }
+                
+                [wself.selectedArray removeAllObjects];
+                [wself.selectedArray addObjectsFromArray:wself.selectedAssets];
+                
+                [wself.selectedAssetsView addModelWithData:wself.selectedAssets];
+                
+                wself.selectedAssets = nil;
             }
-            [wself.selectedArray removeAllObjects];
-            [wself.selectedArray addObjectsFromArray:wself.selectedAssets];
             
-            [wself.selectedAssetsView addModelWithData:wself.selectedAssets];
             [wself.collectionView reloadData];
         }];
     } failBlcok:^(NSError *error) {
+        [XFHUD dismiss];
         XFAssetsLibraryAccessFailureView *view = [XFAssetsLibraryAccessFailureView makeView];
         [wself.view addSubview:view];
         view.sd_layout.spaceToSuperView(UIEdgeInsetsZero);
@@ -158,7 +215,16 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if ( 0 == indexPath.item ) {
+        XFWeakSelf;
+        XFCameraViewController *cameraViewController = [XFCameraViewController new];
+        cameraViewController.takePhotosBlock = ^(XFAssetsModel *pmodel) {
         
+            [wself.selectedArray addObject:pmodel];
+            [wself.selectedAssetsView addModelWithData:@[pmodel]];
+            
+            [collectionView reloadData];
+        };
+        [self presentViewController:cameraViewController animated:YES completion:nil];
     }else {
         if ( self.maxPhotosNumber == 0 ) {
             [self changeDataWithIndexPath:indexPath];
@@ -223,11 +289,12 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
 - (void)dealloc {
     [self.dataArray removeAllObjects];
     self.dataArray = nil;
+    
     [self.selectedArray removeAllObjects];
     self.selectedArray = nil;
+    
     [self.groupArray removeAllObjects];
     self.groupArray = nil;
-    self.selectedArray = nil;
 }
 
 /*

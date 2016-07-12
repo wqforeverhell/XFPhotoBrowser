@@ -12,11 +12,15 @@
 #import "XFHomeCollectionViewCell.h"
 #import "XFAssetsModel.h"
 #import "XFPushAnimation.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "XFAssetsLibraryAccessFailureView.h"
+#import "SDAutoLayout.h"
 
 static NSString *identifier = @"XFHomeCollectionViewCell";
 
 @interface HomeViewController ()
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *rightBarButton;
 
 @property (strong, nonatomic) NSMutableArray *dataArray;
 @property (assign, nonatomic) BOOL isEdit;
@@ -37,6 +41,7 @@ static NSString *identifier = @"XFHomeCollectionViewCell";
 
 - (IBAction)didRightBarButtonAction {
     self.isEdit = !self.isEdit;
+    self.rightBarButton.title = self.isEdit?@"完成":@"编辑";
     [self.collectionView reloadData];
 }
 
@@ -114,18 +119,24 @@ static NSString *identifier = @"XFHomeCollectionViewCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if ( 0 == indexPath.item ) {
         
-        [XFHUD showInOpenLibary];
-        XFAssetsPhotoViewController *assetsPhotoViewController = [XFAssetsPhotoViewController new];
-//        assetsPhotoViewController.maxPhotosNumber = 3;
-        assetsPhotoViewController.selectedAssets = [NSArray arrayWithArray:[self.dataArray copy]];
-        XFWeakSelf;
-        assetsPhotoViewController.callback = ^(NSArray *selectedArray) {
-            [wself.dataArray removeAllObjects];
-            [wself.dataArray addObjectsFromArray:selectedArray];
-            [wself.collectionView reloadData];
-        };
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:assetsPhotoViewController];
-        [self presentViewController:nav animated:YES completion:nil];
+        ALAuthorizationStatus author = [ALAssetsLibrary authorizationStatus];
+        if ( author == ALAuthorizationStatusRestricted || author == ALAuthorizationStatusDenied ){
+            XFAssetsLibraryAccessFailureView *view = [XFAssetsLibraryAccessFailureView makeView];
+            [view show];
+        }else {
+            [XFHUD showInOpenLibary];
+            XFAssetsPhotoViewController *assetsPhotoViewController = [XFAssetsPhotoViewController new];
+            assetsPhotoViewController.selectedAssets = [NSArray arrayWithArray:[self.dataArray copy]];
+            XFWeakSelf;
+            assetsPhotoViewController.callback = ^(NSArray *selectedArray) {
+                [wself.dataArray removeAllObjects];
+                [wself.dataArray addObjectsFromArray:selectedArray];
+                [wself.collectionView reloadData];
+            };
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:assetsPhotoViewController];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        
     }else {
         
     }

@@ -8,6 +8,7 @@
 
 #import "XFPhotoAlbumTableViewCell.h"
 #import "XFAssetsLibraryModel.h"
+#import "MLeaksFinder.h"
 
 @interface XFPhotoAlbumTableViewCell ()
 @property (weak, nonatomic) IBOutlet UIImageView *groupImageView;
@@ -29,13 +30,6 @@
     self.groupImageView.image = model.image;
     self.photoNumberLabel.text = [NSString stringWithFormat:@"%@张",model.photosNumber];
     self.groupNameLabel.text = model.groupName;
-}
-
-- (void)dealloc {
-    self.model = nil;
-    self.groupImageView = nil;
-    self.photoNumberLabel = nil;
-    self.groupNameLabel = nil;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

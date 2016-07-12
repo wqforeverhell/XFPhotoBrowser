@@ -19,7 +19,7 @@
 - (XFAssetsModel *)changeAssetsToModelWithAsset:(ALAsset *)asset {
     XFAssetsModel *model = [[XFAssetsModel alloc] init];
     
-    model.modelID = [asset valueForProperty:ALAssetPropertyDate];
+    model.modelID = [asset valueForProperty:ALAssetPropertyURLs];
     
     model.asset = asset;
     

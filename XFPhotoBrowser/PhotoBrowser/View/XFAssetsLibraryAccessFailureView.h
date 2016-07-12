@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface XFAssetsLibraryAccessFailureView : UIView
+
+- (void)show;
+
 + (instancetype)makeView;
 @end
