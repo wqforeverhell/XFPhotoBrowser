@@ -244,10 +244,11 @@ static NSString *aidentifier = @"XFAssetsCollectionViewCell";
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(-20.f, 0.f, 0.f, 0.f);
+    return UIEdgeInsetsMake(-16.f, 4.f, 4.f, 4.f);
 }
 
 - (void)changeDataWithIndexPath:(NSIndexPath *)indexPath {
+    
     XFAssetsModel *model = self.dataArray[indexPath.item - 1];
     if ( model.selected ) {
         [self.selectedArray removeObject:model];

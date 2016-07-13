@@ -28,6 +28,7 @@
     model.photosNumber = [NSString stringWithFormat:@"%ld",[assetsGroup numberOfAssets]];
     
     model.groupPropertyType = [[assetsGroup valueForProperty:ALAssetsGroupPropertyType] integerValue];
+    
     return model;
 }
 

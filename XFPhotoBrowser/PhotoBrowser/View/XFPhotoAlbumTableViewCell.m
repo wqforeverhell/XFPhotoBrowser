@@ -24,9 +24,7 @@
     // Initialization code
 }
 
-- (void)setModel:(XFAssetsLibraryModel *)model {
-    _model = model;
-    
+- (void)setupModel:(XFAssetsLibraryModel *)model {
     self.groupImageView.image = model.image;
     self.photoNumberLabel.text = [NSString stringWithFormat:@"%@张",model.photosNumber];
     self.groupNameLabel.text = model.groupName;

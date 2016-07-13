@@ -16,6 +16,8 @@
 #import "SVProgressHUD.h"
 #import "XFPushAnimation.h"
 
+static NSString *identifier = @"XFPhotoAlbumTableViewCell";
+
 @interface XFPhotoAlbumViewController ()
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -29,6 +31,8 @@
     [super viewDidLoad];
     
     self.title = @"相册";
+    
+    [self.tableView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellReuseIdentifier:identifier];
     
     self.navigationController.navigationBar.barTintColor = RGB(48, 48, 48);
     NSDictionary *titleTextAttributesDict = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor whiteColor],NSForegroundColorAttributeName,[UIFont systemFontOfSize:17.f],NSFontAttributeName,nil];
@@ -61,14 +65,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    XFPhotoAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"XFPhotoAlbumTableViewCell"];
-    if ( !cell ) {
-        cell = loadXibWithName(@"XFPhotoAlbumTableViewCell");
-    }
+    XFPhotoAlbumTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     XFAssetsLibraryModel *model = self.dataArray[indexPath.row];
     
-    cell.model = model;
+    [cell setupModel:model];
     
     return cell;
 }
@@ -82,16 +83,6 @@
     
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-#pragma mark - ALAssetsLibrary
-+ (ALAssetsLibrary *)defaultAssetsLibrary {
-    static dispatch_once_t pred = 0;
-    static ALAssetsLibrary *library = nil;
-    dispatch_once(&pred, ^{
-        library = [[ALAssetsLibrary alloc] init];
-    });
-    return library;
 }
 
 #pragma mark - 懒加载

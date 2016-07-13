@@ -142,6 +142,10 @@ static NSString *identifier = @"XFHomeCollectionViewCell";
     }
 }
 
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    return UIEdgeInsetsMake(4.f, 4.f, 4.f, 4.f);
+}
+
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
     return indexPath.item == 0?NO:self.isEdit;
 }

@@ -10,5 +10,7 @@
 @class XFAssetsLibraryModel;
 
 @interface XFPhotoAlbumTableViewCell : UITableViewCell
-@property (strong, nonatomic) XFAssetsLibraryModel *model;
+
+- (void)setupModel:(XFAssetsLibraryModel *)model;
+
 @end
